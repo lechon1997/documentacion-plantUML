@@ -1,0 +1,71 @@
+/* ----------------- DIAGRAMA UML ----------------- */
+
+@startuml
+class Persona{
+Id
+nombre
+apellido
+tareas
+
+nuevaTarea()
+eliminarTarea()
+completarTarea()
+}
+
+class Tarea{
+Id
+nombre
+descripcion
+}
+
+
+Persona "1" ---> "*" Tarea
+@enduml
+
+/* ----------------- DIAGRAMA SECUENCIA NUEVA TAREA----------------- */
+
+@startuml
+actor Persona
+
+Persona->ControladorTarea : nuevaTarea
+ControladorTarea ->ServiceTarea : nuevaTarea
+ServiceTarea ->RepositoryTarea: save
+database MongoDb
+RepositoryTarea --> MongoDb: altaTarea
+RepositoryTarea <-- MongoDb: ResponseDb
+ServiceTarea <- RepositoryTarea : respustaBackend
+ControladorTarea <-ServiceTarea : respuestaBackend
+Persona <- ControladorTarea : respuestaBackend
+@enduml
+
+/* ----------------- DIAGRAMA SECUENCIA ELIMINAR TAREA----------------- */
+
+@startuml
+actor Persona
+
+Persona->ControladorTarea : eliminarTarea
+ControladorTarea ->ServiceTarea : eliminarTarea
+ServiceTarea ->RepositoryTarea: delete
+database MongoDb
+RepositoryTarea --> MongoDb: eliminarTarea
+RepositoryTarea <-- MongoDb: ResponseDb
+ServiceTarea <- RepositoryTarea : tareaEliminada
+ControladorTarea <-ServiceTarea : tareaEliminada
+Persona <- ControladorTarea : tareaEliminada
+@enduml
+
+/* ----------------- DIAGRAMA SECUENCIA COMPLETAR TAREA----------------- */
+
+@startuml
+actor Persona
+
+Persona->ControladorTarea : completarTarea
+ControladorTarea ->ServiceTarea : completarTarea
+ServiceTarea ->RepositoryTarea: save
+database MongoDb
+RepositoryTarea --> MongoDb: completarTarea
+RepositoryTarea <-- MongoDb: ResponseDb
+ServiceTarea <- RepositoryTarea : tareaCompletada
+ControladorTarea <-ServiceTarea : tareaCompletada
+Persona <- ControladorTarea : tareaCompletada
+@enduml
